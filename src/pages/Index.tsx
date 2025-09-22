@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useRestaurant } from '@/hooks/useRestaurant';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, LogOut, Users, ChefHat, Package, BarChart3, Settings, DollarSign } from 'lucide-react';
+import { Loader2, LogOut, Users, ChefHat, Package, BarChart3, Settings, DollarSign, Building2 } from 'lucide-react';
 import MobileNav from '@/components/ui/mobile-nav';
 import SimpleCard from '@/components/ui/simple-card';
 import LoadingScreen from '@/components/ui/loading-screen';
@@ -149,6 +149,20 @@ const Index = () => {
                 onButtonClick={() => {
                   if (['admin', 'manager'].includes(userRole || '')) {
                     navigate('/price-management');
+                  }
+                }}
+              />
+
+              <SimpleCard
+                icon={Building2}
+                title="Gestão de Fornecedores"
+                description="Controle fornecedores e compras"
+                details="Cadastre fornecedores, gerencie contatos e acompanhe histórico de compras para melhor negociação."
+                buttonText={['admin', 'manager'].includes(userRole || '') ? 'Acessar Fornecedores' : 'Sem Permissão'}
+                buttonDisabled={!['admin', 'manager'].includes(userRole || '')}
+                onButtonClick={() => {
+                  if (['admin', 'manager'].includes(userRole || '')) {
+                    navigate('/supplier-management');
                   }
                 }}
               />
