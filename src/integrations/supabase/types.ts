@@ -304,6 +304,10 @@ export type Database = {
         Args: { item_id: string }
         Returns: string
       }
+      get_user_restaurant_role: {
+        Args: { restaurant_id: string; user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
       get_user_role: {
         Args: { restaurant_id: string; user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -314,6 +318,14 @@ export type Database = {
           restaurant_id: string
           user_id: string
         }
+        Returns: boolean
+      }
+      user_is_restaurant_admin_or_manager: {
+        Args: { restaurant_id: string; user_id: string }
+        Returns: boolean
+      }
+      user_is_restaurant_member: {
+        Args: { restaurant_id: string; user_id: string }
         Returns: boolean
       }
     }
