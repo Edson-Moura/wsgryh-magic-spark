@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useRestaurant } from '@/hooks/useRestaurant';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, LogOut, Users, ChefHat, Package, BarChart3, Settings } from 'lucide-react';
+import MobileNav from '@/components/ui/mobile-nav';
+import SimpleCard from '@/components/ui/simple-card';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -41,11 +43,7 @@ const Index = () => {
   };
 
   if (loading || restaurantLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingScreen message="Carregando seu dashboard..." />;
   }
 
   if (!user) {
@@ -55,24 +53,27 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <ChefHat className="h-8 w-8 text-primary" />
-            <div>
-              <h1 className="text-2xl font-bold text-primary">
-                {currentRestaurant?.name || 'RestaurantApp'}
-              </h1>
-              <p className="text-sm text-muted-foreground">Sistema de Gestão</p>
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container-mobile mx-auto py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <MobileNav />
+            <div className="flex items-center space-x-3">
+              <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
+              <div className="hidden sm:block">
+                <h1 className="text-xl sm:text-2xl font-bold text-primary">
+                  {currentRestaurant?.name || 'RestaurantApp'}
+                </h1>
+                <p className="text-sm text-muted-foreground">Sistema de Gestão</p>
+              </div>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
-            <div className="text-right">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="hidden md:block text-right">
               <div className="flex items-center space-x-2">
                 <p className="text-sm font-medium">Bem-vindo!</p>
                 {userRole && (
-                  <Badge variant={getRoleBadgeVariant(userRole)}>
+                  <Badge variant={getRoleBadgeVariant(userRole)} className="text-xs">
                     {getRoleDisplayName(userRole)}
                   </Badge>
                 )}
@@ -83,7 +84,7 @@ const Index = () => {
               variant="outline" 
               size="sm" 
               onClick={signOut}
-              className="flex items-center space-x-2"
+              className="hidden md:flex items-center space-x-2"
             >
               <LogOut className="h-4 w-4" />
               <span>Sair</span>
@@ -93,162 +94,110 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container-mobile mx-auto py-6 sm:py-8">
         {!currentRestaurant ? (
           // No restaurant setup
-          <div className="text-center py-12">
-            <ChefHat className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Configure seu Restaurante</h2>
-            <p className="text-muted-foreground mb-6">
+          <div className="text-center py-12 px-4">
+            <ChefHat className="h-14 w-14 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-6" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-3">Configure seu Restaurante</h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">
               Para começar a usar o sistema, você precisa configurar seu restaurante
             </p>
-            <Button onClick={() => navigate('/restaurant-setup')}>
+            <Button 
+              onClick={() => navigate('/restaurant-setup')}
+              className="btn-mobile"
+            >
               Configurar Restaurante
             </Button>
           </div>
         ) : (
           <>
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-2">Dashboard</h2>
-              <p className="text-muted-foreground">
+            <div className="mb-6 sm:mb-8 text-center sm:text-left">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">Dashboard</h2>
+              <p className="text-muted-foreground leading-relaxed">
                 Gerencie todos os aspectos do seu restaurante em um só lugar
               </p>
             </div>
 
             {/* Feature Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <Users className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle>Gestão de Usuários</CardTitle>
-                      <CardDescription>
-                        Gerencie funcionários e permissões
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Controle de acesso para diferentes perfis: admin, gerente, chef, funcionário do estoque.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-4"
-                    disabled={!['admin', 'manager'].includes(userRole || '')}
-                  >
-                    {['admin', 'manager'].includes(userRole || '') ? 'Acessar' : 'Sem Permissão'}
-                  </Button>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <SimpleCard
+                icon={Users}
+                title="Gestão de Usuários"
+                description="Gerencie funcionários e permissões"
+                details="Controle de acesso para diferentes perfis: admin, gerente, chef, funcionário do estoque."
+                buttonText={['admin', 'manager'].includes(userRole || '') ? 'Acessar' : 'Sem Permissão'}
+                buttonDisabled={!['admin', 'manager'].includes(userRole || '')}
+              />
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <Package className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle>Controle de Estoque</CardTitle>
-                      <CardDescription>
-                        Monitore ingredientes e produtos
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Alertas de baixo estoque, datas de validade e sugestões de reposição automáticas.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-4" 
-                    disabled={!['admin', 'manager', 'inventory'].includes(userRole || '')}
-                  >
-                    {['admin', 'manager', 'inventory'].includes(userRole || '') ? 'Em breve' : 'Sem Permissão'}
-                  </Button>
-                </CardContent>
-              </Card>
+              <SimpleCard
+                icon={Package}
+                title="Controle de Estoque"
+                description="Monitore ingredientes e produtos"
+                details="Alertas de baixo estoque, datas de validade e sugestões de reposição automáticas."
+                buttonText={['admin', 'manager', 'inventory'].includes(userRole || '') ? 'Em breve' : 'Sem Permissão'}
+                buttonDisabled={!['admin', 'manager', 'inventory'].includes(userRole || '')}
+              />
 
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer" 
-                    onClick={() => ['admin', 'manager'].includes(userRole || '') && navigate('/dashboard')}>
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-primary/10 rounded-lg">
-                      <BarChart3 className="h-6 w-6 text-primary" />
-                    </div>
-                    <div>
-                      <CardTitle>Relatórios</CardTitle>
-                      <CardDescription>
-                        Análises e métricas do negócio
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    Dashboards com vendas, custos, performance de pratos e análise de lucratividade.
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full mt-4" 
-                    disabled={!['admin', 'manager'].includes(userRole || '')}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (['admin', 'manager'].includes(userRole || '')) {
-                        navigate('/dashboard');
-                      }
-                    }}
-                  >
-                    {['admin', 'manager'].includes(userRole || '') ? 'Acessar Dashboard' : 'Sem Permissão'}
-                  </Button>
-                </CardContent>
-              </Card>
+              <SimpleCard
+                icon={BarChart3}
+                title="Relatórios"
+                description="Análises e métricas do negócio"
+                details="Dashboards com vendas, custos, performance de pratos e análise de lucratividade."
+                buttonText={['admin', 'manager'].includes(userRole || '') ? 'Acessar Dashboard' : 'Sem Permissão'}
+                buttonDisabled={!['admin', 'manager'].includes(userRole || '')}
+                onButtonClick={() => {
+                  if (['admin', 'manager'].includes(userRole || '')) {
+                    navigate('/dashboard');
+                  }
+                }}
+              />
             </div>
 
             {/* Quick Actions */}
-            <div className="mt-12">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Ações Rápidas</CardTitle>
-                  <CardDescription>
+            <div className="mt-8 sm:mt-12">
+              <div className="bg-card rounded-lg border p-4 sm:p-6">
+                <div className="mb-4 sm:mb-6">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Ações Rápidas</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     Configurações e ações importantes para seu restaurante
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {userRole === 'admin' && (
-                      <Button className="justify-start h-auto p-4" onClick={() => navigate('/restaurant-setup')}>
-                        <div className="text-left">
-                          <div className="font-medium flex items-center space-x-2">
-                            <Settings className="h-4 w-4" />
-                            <span>Configurar Restaurante</span>
-                          </div>
-                          <div className="text-sm text-primary-foreground/80">
+                  </p>
+                </div>
+                <div className="space-y-3 sm:space-y-4">
+                  {userRole === 'admin' && (
+                    <Button 
+                      className="w-full justify-start h-auto p-4 sm:p-5" 
+                      onClick={() => navigate('/restaurant-setup')}
+                    >
+                      <div className="text-left flex items-center space-x-3">
+                        <Settings className="h-5 w-5 shrink-0" />
+                        <div>
+                          <div className="font-medium text-base">Configurar Restaurante</div>
+                          <div className="text-sm text-primary-foreground/80 mt-1">
                             Edite informações básicas do seu estabelecimento
                           </div>
                         </div>
-                      </Button>
-                    )}
-                    {['admin', 'manager'].includes(userRole || '') && (
-                      <Button variant="outline" className="justify-start h-auto p-4">
-                        <div className="text-left">
-                          <div className="font-medium flex items-center space-x-2">
-                            <Users className="h-4 w-4" />
-                            <span>Convidar Equipe</span>
-                          </div>
-                          <div className="text-sm text-muted-foreground">
+                      </div>
+                    </Button>
+                  )}
+                  {['admin', 'manager'].includes(userRole || '') && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full justify-start h-auto p-4 sm:p-5"
+                    >
+                      <div className="text-left flex items-center space-x-3">
+                        <Users className="h-5 w-5 shrink-0" />
+                        <div>
+                          <div className="font-medium text-base">Convidar Equipe</div>
+                          <div className="text-sm text-muted-foreground mt-1">
                             Adicione funcionários ao sistema
                           </div>
                         </div>
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+                      </div>
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
           </>
         )}

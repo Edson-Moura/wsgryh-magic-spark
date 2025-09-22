@@ -2,6 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-first responsive improvements */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Improved touch targets for mobile */
+  button, a, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+  
+  /* Better mobile text readability */
+  body {
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Mobile-optimized form inputs */
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+@layer utilities {
+  /* Mobile-friendly spacing */
+  .container-mobile {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Touch-friendly buttons */
+  .btn-mobile {
+    @apply h-12 px-6 text-base font-medium;
+  }
+  
+  /* Card hover effects for touch devices */
+  .card-interactive {
+    @apply transition-all duration-200 active:scale-[0.98] hover:shadow-lg;
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */

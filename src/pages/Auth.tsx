@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, Mail, Lock, User, Chrome } from 'lucide-react';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -67,17 +68,13 @@ const Auth = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingScreen message="Verificando autenticação..." />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/20 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/10 to-secondary/20 flex items-center justify-center container-mobile py-6">
       <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+        <CardHeader className="text-center space-y-4">
           <CardTitle className="text-2xl font-bold text-primary">RestaurantApp</CardTitle>
           <CardDescription>
             Gerencie seu restaurante de forma inteligente
@@ -126,7 +123,7 @@ const Auth = () => {
                 
                 <Button 
                   type="submit" 
-                  className="w-full" 
+                  className="w-full btn-mobile" 
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -205,7 +202,7 @@ const Auth = () => {
                 
                 <Button 
                   type="submit" 
-                  className="w-full" 
+                  className="w-full btn-mobile" 
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -233,7 +230,7 @@ const Auth = () => {
             
             <Button
               variant="outline"
-              className="w-full mt-4"
+              className="w-full btn-mobile mt-4"
               onClick={handleGoogleSignIn}
               disabled={isLoading}
             >

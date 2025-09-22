@@ -8,6 +8,8 @@ import { DashboardStats } from '@/components/dashboard/DashboardStats';
 import { DashboardCharts } from '@/components/dashboard/DashboardCharts';
 import { ReportsSection } from '@/components/dashboard/ReportsSection';
 import { Loader2, LogOut, ChefHat, ArrowLeft, RefreshCw } from 'lucide-react';
+import MobileNav from '@/components/ui/mobile-nav';
+import LoadingScreen from '@/components/ui/loading-screen';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -24,11 +26,7 @@ const Dashboard = () => {
   const hasAccess = ['admin', 'manager'].includes(userRole || '');
 
   if (loading || dashboardLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    );
+    return <LoadingScreen message="Carregando relatórios..." />;
   }
 
   if (!user || !currentRestaurant) {
@@ -54,37 +52,38 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10">
       {/* Header */}
-      <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-4">
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container-mobile mx-auto py-3 sm:py-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <MobileNav />
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate('/')}
-              className="flex items-center space-x-2"
+              className="hidden sm:flex items-center space-x-2"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Voltar</span>
             </Button>
             <div className="flex items-center space-x-3">
-              <ChefHat className="h-8 w-8 text-primary" />
+              <ChefHat className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
               <div>
-                <h1 className="text-2xl font-bold text-primary">
-                  Relatórios e Dashboards
+                <h1 className="text-lg sm:text-2xl font-bold text-primary">
+                  Relatórios
                 </h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   {currentRestaurant.name}
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             <Button 
               variant="outline" 
               size="sm" 
               onClick={refetch}
-              className="flex items-center space-x-2"
+              className="hidden sm:flex items-center space-x-2"
             >
               <RefreshCw className="h-4 w-4" />
               <span>Atualizar</span>
@@ -93,7 +92,7 @@ const Dashboard = () => {
               variant="outline" 
               size="sm" 
               onClick={signOut}
-              className="flex items-center space-x-2"
+              className="hidden md:flex items-center space-x-2"
             >
               <LogOut className="h-4 w-4" />
               <span>Sair</span>
@@ -103,21 +102,21 @@ const Dashboard = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container-mobile mx-auto py-6 sm:py-8">
         {!dashboardStats || !reportData ? (
           <div className="text-center py-12">
-            <Loader2 className="h-16 w-16 text-muted-foreground mx-auto mb-4 animate-spin" />
-            <h2 className="text-2xl font-bold mb-2">Carregando Dados</h2>
-            <p className="text-muted-foreground">
+            <Loader2 className="h-14 w-14 sm:h-16 sm:w-16 text-muted-foreground mx-auto mb-6 animate-spin" />
+            <h2 className="text-xl sm:text-2xl font-bold mb-3">Carregando Dados</h2>
+            <p className="text-muted-foreground leading-relaxed">
               Processando informações do dashboard...
             </p>
           </div>
         ) : (
           <>
             {/* Dashboard Overview */}
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold mb-2">Painel de Controle</h2>
-              <p className="text-muted-foreground">
+            <div className="mb-6 sm:mb-8 text-center sm:text-left">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-2">Painel de Controle</h2>
+              <p className="text-muted-foreground leading-relaxed">
                 Visão geral do status do estoque, valores e performance
               </p>
             </div>

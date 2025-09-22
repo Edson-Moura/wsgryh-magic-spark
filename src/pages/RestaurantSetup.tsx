@@ -70,7 +70,7 @@ const RestaurantSetup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10 flex items-center justify-center container-mobile py-6">
       <Card className="w-full max-w-2xl">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
@@ -176,13 +176,13 @@ const RestaurantSetup = () => {
                   type="button" 
                   variant="outline" 
                   onClick={() => navigate('/')}
-                  className="flex-1"
+                  className="flex-1 btn-mobile"
                 >
                   Pular por Agora
                 </Button>
                 <Button 
                   type="submit" 
-                  className="flex-1"
+                  className="flex-1 btn-mobile"
                   disabled={isLoading}
                 >
                   {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
