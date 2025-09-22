@@ -110,11 +110,9 @@ export const useRestaurant = () => {
       console.log('Creating restaurant with data:', restaurantData);
       
       // Create restaurant (trigger will add user as admin automatically)
-      const { data: restaurant, error: restaurantError } = await supabase
+      const { error: restaurantError } = await supabase
         .from('restaurants')
-        .insert(restaurantData)
-        .select()
-        .single();
+        .insert(restaurantData);
 
       if (restaurantError) throw restaurantError;
 
@@ -126,7 +124,7 @@ export const useRestaurant = () => {
       // Refresh data
       await fetchUserRestaurants();
       
-      return { data: restaurant, error: null };
+      return { data: null, error: null };
     } catch (error: any) {
       console.error('Error creating restaurant:', error);
       toast({
