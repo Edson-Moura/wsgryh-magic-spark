@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRestaurant } from '@/hooks/useRestaurant';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -21,8 +22,17 @@ type RestaurantData = z.infer<typeof restaurantSchema>;
 
 const RestaurantSetup = () => {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
   const { createRestaurant } = useRestaurant();
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      console.log('User not authenticated, redirecting to auth');
+      navigate('/auth');
+    }
+  }, [user, authLoading, navigate]);
 
   const form = useForm<RestaurantData>({
     resolver: zodResolver(restaurantSchema),
@@ -35,6 +45,14 @@ const RestaurantSetup = () => {
   });
 
   const onSubmit = async (data: RestaurantData) => {
+    console.log('Form submitted, user status:', { user: !!user, userId: user?.id });
+    
+    if (!user) {
+      console.error('No user found when submitting form');
+      navigate('/auth');
+      return;
+    }
+
     setIsLoading(true);
     
     const { error } = await createRestaurant({

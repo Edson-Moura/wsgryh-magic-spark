@@ -99,9 +99,16 @@ export const useRestaurant = () => {
   };
 
   const createRestaurant = async (restaurantData: Omit<Restaurant, 'id' | 'created_at' | 'updated_at'>) => {
-    if (!user) return { error: 'User not authenticated' };
+    console.log('User authentication status:', { user: !!user, userId: user?.id });
+    
+    if (!user) {
+      console.error('User not authenticated');
+      return { error: 'User not authenticated' };
+    }
 
     try {
+      console.log('Creating restaurant with data:', restaurantData);
+      
       // Create restaurant
       const { data: restaurant, error: restaurantError } = await supabase
         .from('restaurants')
