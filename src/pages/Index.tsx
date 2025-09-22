@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useRestaurant } from '@/hooks/useRestaurant';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, LogOut, Users, ChefHat, Package, BarChart3, Settings } from 'lucide-react';
+import { Loader2, LogOut, Users, ChefHat, Package, BarChart3, Settings, DollarSign } from 'lucide-react';
 import MobileNav from '@/components/ui/mobile-nav';
 import SimpleCard from '@/components/ui/simple-card';
 import LoadingScreen from '@/components/ui/loading-screen';
@@ -137,6 +137,20 @@ const Index = () => {
                 details="Alertas de baixo estoque, datas de validade e sugestões de reposição automáticas."
                 buttonText={['admin', 'manager', 'inventory'].includes(userRole || '') ? 'Em breve' : 'Sem Permissão'}
                 buttonDisabled={!['admin', 'manager', 'inventory'].includes(userRole || '')}
+              />
+
+              <SimpleCard
+                icon={DollarSign}
+                title="Gestão de Preços"
+                description="Otimize preços e margens"
+                details="Ajuste inteligente de preços baseado em custos, demanda e metas de lucratividade."
+                buttonText={['admin', 'manager'].includes(userRole || '') ? 'Acessar Preços' : 'Sem Permissão'}
+                buttonDisabled={!['admin', 'manager'].includes(userRole || '')}
+                onButtonClick={() => {
+                  if (['admin', 'manager'].includes(userRole || '')) {
+                    navigate('/price-management');
+                  }
+                }}
               />
 
               <SimpleCard
