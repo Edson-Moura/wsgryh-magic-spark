@@ -10,6 +10,7 @@ import RestaurantSetup from "./pages/RestaurantSetup";
 import Dashboard from "./pages/Dashboard";
 import PriceManagement from "./pages/PriceManagement";
 import SupplierManagement from "./pages/SupplierManagement";
+import Customization from "./pages/Customization";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/price-management" element={<PriceManagement />} />
           <Route path="/supplier-management" element={<SupplierManagement />} />
+          <Route path="/customization" element={<Customization />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

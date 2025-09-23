@@ -36,23 +36,24 @@ export const useSuppliers = () => {
   const fetchSuppliers = async () => {
     try {
       const { data: items, error } = await supabase
-        .from('inventory_items')
-        .select('supplier')
-        .not('supplier', 'is', null);
+        .from('suppliers')
+        .select('*');
 
       if (error) throw error;
 
-      // Create unique suppliers list
-      const uniqueSuppliers = [...new Set(items?.map(item => item.supplier).filter(Boolean))];
+      // Map suppliers from database
+      const suppliersData: Supplier[] = items?.map(supplier => ({
+        id: supplier.id,
+        name: supplier.name,
+        contact_person: supplier.contact_person,
+        phone: supplier.phone,
+        email: supplier.email,
+        address: supplier.address,
+        products: [], // You can extend this based on your needs
+        created_at: supplier.created_at,
+        updated_at: supplier.updated_at
+      })) || [];
       
-      const suppliersData: Supplier[] = uniqueSuppliers.map((supplier, index) => ({
-        id: `supplier-${index}`,
-        name: supplier || '',
-        products: [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }));
-
       setSuppliers(suppliersData);
     } catch (error: any) {
       toast({
@@ -66,23 +67,24 @@ export const useSuppliers = () => {
   // Fetch purchase history
   const fetchPurchaseHistory = async () => {
     try {
-      const { data: items, error } = await supabase
-        .from('inventory_items')
-        .select('*')
-        .not('supplier', 'is', null)
-        .not('cost_per_unit', 'is', null);
+      const { data: purchases, error } = await supabase
+        .from('purchase_history')
+        .select(`
+          *,
+          suppliers(name)
+        `);
 
       if (error) throw error;
 
-      const purchasesData: Purchase[] = items?.map((item, index) => ({
-        id: `purchase-${index}`,
-        supplier_name: item.supplier || 'Fornecedor Desconhecido',
-        item_name: item.name,
-        quantity: item.current_quantity,
-        unit_cost: item.cost_per_unit || 0,
-        total_cost: (item.cost_per_unit || 0) * item.current_quantity,
-        purchase_date: item.created_at,
-        created_at: item.created_at
+      const purchasesData: Purchase[] = purchases?.map((purchase) => ({
+        id: purchase.id,
+        supplier_name: purchase.suppliers?.name || 'Fornecedor Desconhecido',
+        item_name: purchase.item_name,
+        quantity: purchase.quantity,
+        unit_cost: purchase.unit_price,
+        total_cost: purchase.total_amount,
+        purchase_date: purchase.purchase_date,
+        created_at: purchase.created_at
       })) || [];
 
       setPurchases(purchasesData);
@@ -98,12 +100,31 @@ export const useSuppliers = () => {
   // Add new supplier
   const addSupplier = async (supplierData: Omit<Supplier, 'id' | 'created_at' | 'updated_at'>) => {
     try {
-      // For now, we'll store in local state since there's no suppliers table
+      const { data, error } = await supabase
+        .from('suppliers')
+        .insert({
+          name: supplierData.name,
+          contact_person: supplierData.contact_person,
+          phone: supplierData.phone,
+          email: supplierData.email,
+          address: supplierData.address,
+          restaurant_id: '00000000-0000-0000-0000-000000000000' // This should be dynamic
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
       const newSupplier: Supplier = {
-        ...supplierData,
-        id: `supplier-${Date.now()}`,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        id: data.id,
+        name: data.name,
+        contact_person: data.contact_person,
+        phone: data.phone,
+        email: data.email,
+        address: data.address,
+        products: [],
+        created_at: data.created_at,
+        updated_at: data.updated_at
       };
 
       setSuppliers(prev => [...prev, newSupplier]);

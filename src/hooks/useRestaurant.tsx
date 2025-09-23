@@ -9,6 +9,11 @@ interface Restaurant {
   email: string | null;
   phone: string | null;
   address: string | null;
+  description: string | null;
+  logo_url: string | null;
+  primary_color: string;
+  secondary_color: string;
+  font_family: string;
   created_at: string;
   updated_at: string;
 }
@@ -18,9 +23,7 @@ interface RestaurantMember {
   user_id: string;
   restaurant_id: string;
   role: 'admin' | 'manager' | 'chef' | 'staff' | 'inventory';
-  is_active: boolean;
   created_at: string;
-  updated_at: string;
 }
 
 export const useRestaurant = () => {
@@ -54,8 +57,7 @@ export const useRestaurant = () => {
           *,
           restaurants (*)
         `)
-        .eq('user_id', user.id)
-        .eq('is_active', true);
+        .eq('user_id', user.id);
 
       if (error) throw error;
 
@@ -88,11 +90,10 @@ export const useRestaurant = () => {
       const { data, error } = await supabase
         .from('restaurant_members')
         .select('*')
-        .eq('restaurant_id', restaurantId)
-        .eq('is_active', true);
+        .eq('restaurant_id', restaurantId);
 
       if (error) throw error;
-      setMembers(data || []);
+      setMembers((data || []) as RestaurantMember[]);
     } catch (error: any) {
       console.error('Error fetching members:', error);
     }
@@ -202,7 +203,7 @@ export const useRestaurant = () => {
     try {
       const { error } = await supabase
         .from('restaurant_members')
-        .update({ is_active: false })
+        .delete()
         .eq('id', memberId);
 
       if (error) throw error;

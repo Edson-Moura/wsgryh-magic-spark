@@ -60,6 +60,11 @@ const RestaurantSetup = () => {
       email: data.email || null,
       phone: data.phone || null,
       address: data.address || null,
+      description: null,
+      logo_url: null,
+      primary_color: '#3B82F6',
+      secondary_color: '#1E40AF',
+      font_family: 'Inter'
     });
     
     setIsLoading(false);

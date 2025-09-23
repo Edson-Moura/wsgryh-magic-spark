@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useRestaurant } from '@/hooks/useRestaurant';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, LogOut, Users, ChefHat, Package, BarChart3, Settings, DollarSign, Building2 } from 'lucide-react';
+import { Loader2, LogOut, Users, ChefHat, Package, BarChart3, Settings, DollarSign, Building2, Palette } from 'lucide-react';
 import MobileNav from '@/components/ui/mobile-nav';
 import SimpleCard from '@/components/ui/simple-card';
 import LoadingScreen from '@/components/ui/loading-screen';
@@ -177,6 +177,20 @@ const Index = () => {
                 onButtonClick={() => {
                   if (['admin', 'manager'].includes(userRole || '')) {
                     navigate('/dashboard');
+                  }
+                }}
+              />
+
+              <SimpleCard
+                icon={Palette}
+                title="Personalização"
+                description="Customize aparência e marca"
+                details="Personalize cores, fontes, logo e templates para refletir a identidade visual do seu restaurante."
+                buttonText={userRole === 'admin' ? 'Personalizar' : 'Sem Permissão'}
+                buttonDisabled={userRole !== 'admin'}
+                onButtonClick={() => {
+                  if (userRole === 'admin') {
+                    navigate('/customization');
                   }
                 }}
               />
